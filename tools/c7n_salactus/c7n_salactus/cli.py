@@ -15,6 +15,13 @@
 """
 from __future__ import print_function
 
+try:
+    unicode
+except NameError:
+    # Python 3!
+    unicode = str
+    basestring = (str, bytes)
+
 from collections import Counter
 import csv
 from datetime import datetime
