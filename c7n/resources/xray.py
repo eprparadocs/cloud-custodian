@@ -33,14 +33,14 @@ class Xray(QueryResourceManager):
         dimension = None
         filter_name = None
 
-        filter_registry = filters
-        action_registry = actions
+    filter_registry = filters
+    action_registry = actions
 
     def __init__(self, data, options):
         super(Xray, self).__init__(data, options)
 
 
-@filters.register('xray-encrypt-key')
+@filters.register('encrypt-key')
 class XrayEncrypted(Filter):
     """Determine if xray is encrypted.
 
@@ -52,10 +52,10 @@ class XrayEncrypted(Filter):
               - name: xray-encrypt-with-default
                 resource: xray
                 filters:
-                  - type: xray-encrypt-key
+                  - type: encrypt-key
                     key: default
               - name: xray-encrypt-with-kms
-                  - type: xray-encrypt-key
+                  - type: encrypt-key
                     key: kms
     """
 
