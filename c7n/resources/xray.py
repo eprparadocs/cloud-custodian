@@ -32,6 +32,8 @@ class Xray(QueryResourceManager):
         id = name = 'Name'
         dimension = None
         filter_name = None
+        enum_spec = ('get_encryption_config', 'EncryptionConfig', None)
+        #detail_spec = None
 
     filter_registry = filters
     action_registry = actions
@@ -61,12 +63,13 @@ class XrayEncrypted(Filter):
 
     permissions = ('xray:GetEncryptionConfig',)
     schema = type_schema(
-        'xray-encrypt-key',
+        'encrypt-key',
         required=['key'],
         key={'type': 'string', 'enum': ['default', 'kms']}
     )
 
     def process(self, resources, event=None):
+        import pdb; pdb.set_trace()
         client = local_session(self.manager.session_factory).client('xray')
         xray_type = client.get_encryption_config()['EncryptionConfig']['Type']
         return xray_type == ('KMS' if self.data.get('key') == 'kms' else 'NONE')
@@ -93,7 +96,7 @@ class SetXrayEncryption(BaseAction):
 
     permissions = ('xray:PutEncryptionConfig')
     schema = type_schema(
-        'xray-encrypt',
+        'encrypt',
         required=['key'],
         key={'type': 'string'}
     )
