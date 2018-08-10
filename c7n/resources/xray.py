@@ -91,7 +91,7 @@ class SetXrayEncryption(BaseAction):
                     key: alias/some/alias/key
     """
 
-    permissions = ('xray:PutEncryptionConfig')
+    permissions = ('xray:PutEncryptionConfig',)
     schema = type_schema(
         'encrypt',
         required=['key'],
