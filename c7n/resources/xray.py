@@ -69,7 +69,7 @@ class XrayEncrypted(Filter):
 
     def process(self, resources, event=None):
         client = local_session(self.manager.session_factory).client('xray')
-        return [client.get_encryption_config()['EncryptionConfig']]
+        return [{'key': client.get_encryption_config()['EncryptionConfig']['KeyId']}]
 
 
 @actions.register('encrypt')
