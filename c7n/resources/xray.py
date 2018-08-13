@@ -101,5 +101,5 @@ class SetXrayEncryption(BaseAction):
     def process(self, resources):
         client = local_session(self.manager.session_factory).client('xray')
         key = self.data.get('key')
-        req = {'Type': 'None'} if key == 'default' else {'Type': 'KMS', 'KeyId': key}
+        req = {'Type': 'NONE'} if key == 'default' else {'Type': 'KMS', 'KeyId': key}
         client.put_encryption_config(**req)
