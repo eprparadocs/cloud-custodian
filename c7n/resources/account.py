@@ -970,3 +970,67 @@ class SetShieldAdvanced(BaseAction):
                 if e.response['Error']['Code'] == 'ResourceNotFoundException':
                     return
                 raise
+
+
+@filters.register('xray-encrypt-key')
+class XrayEncrypted(Filter):
+    """Determine if xray is encrypted.
+
+    :example:
+
+    .. code-block:: yaml
+
+            policies:
+              - name: xray-encrypt-with-default
+                resource: aws.account
+                filters:
+                  - type: xray-encrypt-key
+                    key: default
+              - name: xray-encrypt-with-kms
+                  - type: xray-encrypt-key
+                    key: kms
+    """
+
+    permissions = ('xray:GetEncryptionConfig',)
+    schema = type_schema(
+        'xray-encrypt-key',
+        required=['key'],
+        key={'type': 'string', 'enum': ['default', 'kms']}
+    )
+
+    def process(self, resources, event=None):
+        client = self.manager.session_factory().client('xray')
+        return [{'key': client.get_encryption_config()['EncryptionConfig']['KeyId']}]
+
+@actions.register('xray-encrypt-key')
+class SetXrayEncryption(BaseAction):
+    """Enable specific xray encryption.
+
+    :example:
+
+    .. code-block:: yaml
+
+            policies:
+              - name: xray-default-encrypt
+                resource: aws.account
+                actions:
+                  - type: xray-encrypt-key
+                    key: default
+              - name: xray-kms-encrypt
+                  - type: xray-encrypt-key
+                    key: alias/some/alias/ke
+    """
+
+    permissions = ('xray:PutEncryptionConfig',)
+    schema = type_schema(
+        'xray-encrypt-key',
+        required=['key'],
+        key={'type': 'string'}
+    )
+
+    def process(self, resources):
+        import pdb; pdb.set_trace()
+        client = self.manager.session_factory().client('xray')
+        key = self.data.get('key')
+        req = {'Type': 'NONE'} if key == 'default' else {'Type': 'KMS', 'KeyId': key}
+        client.put_encryption_config(**req)
