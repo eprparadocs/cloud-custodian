@@ -1036,7 +1036,6 @@ class SetXrayEncryption(BaseAction):
     )
 
     def process(self, resources):
-        import pdb; pdb.set_trace()
         client = self.manager.session_factory().client('xray')
         key = self.data.get('key')
         req = {'Type': 'NONE'} if key == 'default' else {'Type': 'KMS', 'KeyId': key}
