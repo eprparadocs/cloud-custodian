@@ -999,14 +999,10 @@ class XrayEncrypted(Filter):
     )
 
     def process(self, resources, event=None):
-        #*************************** DELETE *********************
-        import pdb; pdb.set_trace()
-        #*************************** DELETE *********************
-
         client = self.manager.session_factory().client('xray')
         gec_result = client.get_encryption_config()['EncryptionConfig']
         result = resources[0]['c7n:XrayEncryptionConfig'] = gec_result
-        return result if gec_result['Type'] == ('KMS' if self.data.get('key')=='kms' else 'NONE') else []
+        return resources if gec_result['Type'] == ('KMS' if self.data.get('key')=='kms' else 'NONE') else []
 
 
 @actions.register('xray-encrypt-key')
