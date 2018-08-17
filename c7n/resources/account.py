@@ -1001,11 +1001,11 @@ class XrayEncrypted(Filter):
     def process(self, resources, event=None):
         client = self.manager.session_factory().client('xray')
         gec_result = client.get_encryption_config()['EncryptionConfig']
-        result = resources[0]['c7n:XrayEncryptionConfig'] = gec_result
-        return resources if gec_result['Type'] == ('KMS' if self.data.get('key')=='kms' else 'NONE') else []
+        kv = 'KMS' if self.data.get('key') == 'kms' else 'NONE'
+        return resources if (gec_result['Type'] == kv) else []
 
 
-@actions.register('xray-encrypt-key')
+@actions.register('set-xray-encrypt')
 class SetXrayEncryption(BaseAction):
     """Enable specific xray encryption.
 
@@ -1017,10 +1017,10 @@ class SetXrayEncryption(BaseAction):
               - name: xray-default-encrypt
                 resource: aws.account
                 actions:
-                  - type: xray-encrypt-key
+                  - type: set-xray-encrypt
                     key: default
               - name: xray-kms-encrypt
-                  - type: xray-encrypt-key
+                  - type: set-xray-encrypt
                     key: alias/some/alias/ke
     """
 
