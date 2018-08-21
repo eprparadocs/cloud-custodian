@@ -1001,6 +1001,7 @@ class XrayEncrypted(Filter):
     def process(self, resources, event=None):
         client = self.manager.session_factory().client('xray')
         gec_result = client.get_encryption_config()['EncryptionConfig']
+        resources[0]['c7n:XrayEncryptionConfig'] = gec_result
         kv = 'KMS' if self.data.get('key') == 'kms' else 'NONE'
         return resources if (gec_result['Type'] == kv) else []
 
