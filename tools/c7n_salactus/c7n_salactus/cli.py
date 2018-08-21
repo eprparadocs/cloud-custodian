@@ -15,13 +15,6 @@
 """
 from __future__ import print_function
 
-try:
-    unicode
-except NameError:
-    # Python 3!
-    unicode = str
-    basestring = (str, bytes)
-
 from collections import Counter
 import csv
 from datetime import datetime
@@ -40,7 +33,6 @@ from rq.queue import Queue, FailedQueue
 from rq.worker import Worker
 import tabulate
 
-from c7n.config import Bag
 from c7n import utils
 from c7n_salactus import worker, db
 
@@ -582,7 +574,7 @@ def watch(limit):
         if limit:
             progress = progress[:limit]
 
-        progress.insert(0, Bag(totals))
+        progress.insert(0, utils.Bag(totals))
         format_plain(
             progress, None,
             explicit_only=True,
