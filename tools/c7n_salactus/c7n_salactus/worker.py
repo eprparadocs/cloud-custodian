@@ -187,10 +187,7 @@ def bulk_invoke(func, args, nargs):
         with connection.pipeline() as pipe:
             for s in n:
                 argv[-1] = s
-                try:
-                    job._id = unicode(uuid4())
-                except NameError:
-                    job_id = str(uuid4())
+                job._id = unicode(uuid4())
                 job.args = argv
                 q.enqueue_job(job, pipeline=pipe)
             pipe.execute()
