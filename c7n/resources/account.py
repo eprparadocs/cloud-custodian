@@ -1027,7 +1027,7 @@ class SetXrayEncryption(BaseAction):
 
     permissions = ('xray:PutEncryptionConfig',)
     schema = type_schema(
-        'xray-encrypt-key',
+        'set-xray-encrypt',
         required=['key'],
         key={'type': 'string'}
     )
