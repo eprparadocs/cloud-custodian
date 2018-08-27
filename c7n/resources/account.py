@@ -1015,14 +1015,20 @@ class SetXrayEncryption(BaseAction):
     .. code-block:: yaml
 
             policies:
-              - name: xray-default-encrypt
+              - name: xray-absent-encrypt
                 resource: aws.account
                 actions:
+                  - type: set-xray-encrypt-to-default
+                    key: absent
+              - name: xray-kms-encrypt-by-alias
                   - type: set-xray-encrypt
-                    key: default
-              - name: xray-kms-encrypt
+                    key: alias/aliasname
+              - name: xray-kms-encrypt-by-keyid
                   - type: set-xray-encrypt
-                    key: alias/some/alias/ke
+                    key: kms-keyid
+              - name: xray-kms-encrypt-by-arn
+                  - type: set-xray-encrypt
+                    key: ksm-arn
     """
 
     permissions = ('xray:PutEncryptionConfig',)
@@ -1035,5 +1041,5 @@ class SetXrayEncryption(BaseAction):
     def process(self, resources):
         client = self.manager.session_factory().client('xray')
         key = self.data.get('key')
-        req = {'Type': 'NONE'} if key == 'default' else {'Type': 'KMS', 'KeyId': key}
+        req = {'Type': 'NONE'} if key == 'absent' else {'Type': 'KMS', 'KeyId': key}
         client.put_encryption_config(**req)
