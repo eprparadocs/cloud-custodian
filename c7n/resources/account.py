@@ -989,21 +989,32 @@ class XrayEncrypted(Filter):
               - name: xray-encrypt-with-kms
                   - type: xray-encrypt-key
                     key: kms
+              - name: xray-encrypt-with-specific-key
+                  -type: xray-encrypt-key
+                   key: alias/my-alias or arn or keyid
     """
 
     permissions = ('xray:GetEncryptionConfig',)
     schema = type_schema(
         'xray-encrypt-key',
         required=['key'],
-        key={'type': 'string', 'enum': ['default', 'kms']}
+        key={'type': 'string'}
     )
 
     def process(self, resources, event=None):
+        import pdb; pdb.set_trace()
         client = self.manager.session_factory().client('xray')
         gec_result = client.get_encryption_config()['EncryptionConfig']
         resources[0]['c7n:XrayEncryptionConfig'] = gec_result
-        kv = 'KMS' if self.data.get('key') == 'kms' else 'NONE'
-        return resources if (gec_result['Type'] == kv) else []
+        k = self.data.get('key')
+        if k not in ['default', 'kms']:
+            kmsclient = self.manager.session_factory().client('kms')
+            keyid = kmsclient.describe_key(KeyId=k)['KeyMetadata']['Arn']
+            rc = resources if (gec_result['KeyId'] == keyid) else []
+        else:
+            kv = 'KMS' if self.data.get('key') == 'kms' else 'NONE'
+            rc = resources if (gec_result['Type'] == kv) else []
+        return rc
 
 
 @actions.register('set-xray-encrypt')
@@ -1015,20 +1026,14 @@ class SetXrayEncryption(BaseAction):
     .. code-block:: yaml
 
             policies:
-              - name: xray-absent-encrypt
+              - name: xray-default-encrypt
                 resource: aws.account
                 actions:
-                  - type: set-xray-encrypt-to-default
-                    key: absent
-              - name: xray-kms-encrypt-by-alias
                   - type: set-xray-encrypt
-                    key: alias/aliasname
-              - name: xray-kms-encrypt-by-keyid
+                    key: default
+              - name: xray-kms-encrypt
                   - type: set-xray-encrypt
-                    key: kms-keyid
-              - name: xray-kms-encrypt-by-arn
-                  - type: set-xray-encrypt
-                    key: ksm-arn
+                    key: alias/some/alias/ke
     """
 
     permissions = ('xray:PutEncryptionConfig',)
@@ -1041,5 +1046,5 @@ class SetXrayEncryption(BaseAction):
     def process(self, resources):
         client = self.manager.session_factory().client('xray')
         key = self.data.get('key')
-        req = {'Type': 'NONE'} if key == 'absent' else {'Type': 'KMS', 'KeyId': key}
+        req = {'Type': 'NONE'} if key == 'default' else {'Type': 'KMS', 'KeyId': key}
         client.put_encryption_config(**req)
