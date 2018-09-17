@@ -1002,7 +1002,6 @@ class XrayEncrypted(Filter):
     )
 
     def process(self, resources, event=None):
-        import pdb; pdb.set_trace()
         client = self.manager.session_factory().client('xray')
         gec_result = client.get_encryption_config()['EncryptionConfig']
         resources[0]['c7n:XrayEncryptionConfig'] = gec_result
