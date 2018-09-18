@@ -56,28 +56,7 @@ class FunctionPackage(object):
     def _add_host_config(self):
         config = \
             {
-                "http": {
-                    "routePrefix": "api",
-                    "maxConcurrentRequests": 5,
-                    "maxOutstandingRequests": 30
-                },
-                "logger": {
-                    "defaultLevel": "Trace",
-                    "categoryLevels": {
-                        "Worker": "Trace"
-                    }
-                },
-                "queues": {
-                    "visibilityTimeout": "00:00:10"
-                },
-                "swagger": {
-                    "enabled": True
-                },
-                "eventHub": {
-                    "maxBatchSize": 1000,
-                    "prefetchCount": 1000,
-                    "batchCheckpointFrequency": 1
-                },
+                "version": "2.0",
                 "healthMonitor": {
                     "enabled": True,
                     "healthCheckInterval": "00:00:10",
@@ -85,7 +64,17 @@ class FunctionPackage(object):
                     "healthCheckThreshold": 6,
                     "counterThreshold": 0.80
                 },
-                "functionTimeout": "00:05:00"
+                "functionTimeout": "00:05:00",
+                "logging": {
+                    "fileLoggingMode": "debugOnly"
+                },
+                "extensions": {
+                    "http": {
+                        "routePrefix": "api",
+                        "maxConcurrentRequests": 5,
+                        "maxOutstandingRequests": 30
+                    }
+                }
             }
         self.pkg.add_contents(dest='host.json', contents=json.dumps(config))
 
@@ -184,12 +173,13 @@ class FunctionPackage(object):
         # cffi module needs special handling
         self._add_cffi_module()
 
-    def wait_for_status(self, app_name, retries=5, delay=15):
+    def wait_for_status(self, app_name, retries=10, delay=15):
         for r in range(retries):
             if self.status(app_name):
                 return True
             else:
-                self.log.info('Will retry Function App status check in %s seconds...' % delay)
+                self.log.info('(%s/%s) Will retry Function App status check in %s seconds...'
+                              % (r + 1, retries, delay))
                 time.sleep(delay)
         return False
 
@@ -226,7 +216,7 @@ class FunctionPackage(object):
             'Authorization': 'Bearer %s' % (s.get_bearer_token())
         }
 
-        self.log.info("Publishing package at: %s" % self.pkg.path)
+        self.log.info("Publishing Function package from %s" % self.pkg.path)
 
         zip_file = open(self.pkg.path, 'rb').read()
 
