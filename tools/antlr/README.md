@@ -15,8 +15,9 @@ Files in the directory:
 cc.g4 - Antlr grammar for cloud custodian policy files
 test.cc - Test policy (primitive today but will get more complete)
 REAMDE.md - this file
+main.py - main program if python is used
 
-To try it out do the following:
+To try it out do the following for JAVA
 
 1) Install java and javac for your environment
 2) Install antlr (including the definitions of antlr4 and grun)
@@ -24,7 +25,13 @@ To try it out do the following:
 4) Compile the java:  javac *.jave
 5) Run the test case:  grun cc start -tokens <test.cc
 
-This will print out some stuff about how the parsing is going. 
+This will print out some stuff about how the parsing is going.
+
+If you want to use Python3 use this:
+
+1) Generate code:  antlr4 -Dlanguage=Python3 cc.g4
+2) Run it this way: python main.py test.cc
+ 
 
 Any questions please contact me at chuckwegrzyn@yahoo.com
 
