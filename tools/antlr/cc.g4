@@ -21,8 +21,8 @@ policy: DASH name tags resource pmodes description comments pfilters actions ;
 
 name: 'name' COLON POLICYNAME NL ;
 
-tags: 'tags' NL DASH tag+ ; 
-tag: quotedString NL ;
+tags: 'tags' NL tag+ ; 
+tag: DASH quotedString NL ;
 quotedString: DQUOTE STRING DQUOTE ;
 
 resource: 'resource' COLON rtype NL ;
@@ -30,8 +30,8 @@ rtype: ALPHA DOT ALPHANUM | ALPHANUM ;
 
 pmodes: 'mode' COLON NL (typemode | tagsmode | eventsmode) ;
 typemode: 'type' COLON STRING NL ;
-tagsmode: 'tags' COLON NL tag+ ;
-tag: STRING NL ;
+tagsmode: 'tags' COLON NL tagtag+ ;
+tagtag: STRING NL ;
 eventsmode: sourceevent | eventevent | idevent ;
 sourceevent: 'source' COLON dottedname NL ;
 eventevent: 'event' COLON STRING NL ;
