@@ -16,17 +16,17 @@ WS       : [ \t]+ -> skip ;
   Start of policy file grammar
 **/
 start: 'policies' COLON NL policy+ ;
-policy: DASH name tags resource modes description comments pfilters actions ;
+policy: DASH name tags resource pmodes description comments pfilters actions ;
 name: 'name' COLON POLICYNAME NL ;
 
 tags: 'tags' NL DASH quotedString NL ;
-quotedstring: DQUOTE STRING DQUOTE ;
+quotedString: DQUOTE STRING DQUOTE ;
 
 resource: 'resource' COLON rtype NL ;
 rtype: ALPHA DOT ALPHANUM | ALPHANUM ;
 
-modes: 'mode' COLON NL mode ;
-mode: MODETYPE COLON MODEVALUE NL ;
+pmodes: 'mode' COLON NL pmode ;
+pmode: MODETYPE COLON MODEVALUE NL ;
 
 description: 'description' COLON NL STRING NL ;
 
