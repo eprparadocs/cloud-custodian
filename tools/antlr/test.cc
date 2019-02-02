@@ -11,7 +11,3 @@ policies:
    actions:
     - type: copy-instance-tags
 
-
-
-
-
