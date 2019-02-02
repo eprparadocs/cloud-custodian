@@ -25,8 +25,18 @@ quotedString: DQUOTE STRING DQUOTE ;
 resource: 'resource' COLON rtype NL ;
 rtype: ALPHA DOT ALPHANUM | ALPHANUM ;
 
-pmodes: 'mode' COLON NL pmode ;
-pmode: MODETYPE COLON MODEVALUE NL ;
+pmodes: 'mode' COLON NL (typemode | tagsmode | eventsmode) ;
+typemode: 'type' COLON STRING NL ;
+tagsmode: 'tags' COLON NL tag+ ;
+tag: STRING NL ;
+eventsmode: sourceevent | eventevent | idevent ;
+sourceevent: 'source' COLON dottedname NL ;
+eventevent: 'event' COLON STRING NL ;
+idevent: 'id' COLON quotedString NL ;
+dottedname: STRING (DOT STRING)? ; 
+
+pmode: valid_modes COLON MODEVALUE NL ;
+valid_modes: 'type' | 'tag' | 'events' ;
 
 description: 'description' COLON NL STRING NL ;
 
