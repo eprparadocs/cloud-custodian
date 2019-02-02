@@ -3,7 +3,6 @@ grammar cc ;
 
 ALPHA    : [A-Za-z]+ ;
 ALPHANUM : [A-Za-z0-9]+ ;
-COLON    : ':' ;
 DASH     : '-' ;
 DOT      : '.' ;
 DQUOTE   : '"' ;
@@ -15,37 +14,37 @@ WS       : [ \t]+ -> skip ;
 /**
   Start of policy file grammar
 **/
-start: 'policies' COLON NL policy+ ;
+start: 'policies:' NL policy+ ;
 
 policy: DASH name tags resource pmodes description comments pfilters actions ;
 
-name: 'name' COLON pname NL ;
+name: 'name:' pname NL ;
 pname: POLICYNAME ;
 
-tags: 'tags' NL tag+ ; 
+tags: 'tags:' NL tag+ ; 
 tag: DASH QSTRING NL ;
 
-resource: 'resource' COLON rtype NL ;
+resource: 'resource:' rtype NL ;
 rtype: ALPHA DOT ALPHANUM | ALPHANUM ;
 
-pmodes: 'mode' COLON NL (typemode | tagsmode | eventsmode) ;
-typemode: 'type' COLON STRING NL ;
-tagsmode: 'tags' COLON NL tagtag+ ;
+pmodes: 'mode:' NL (typemode | tagsmode | eventsmode) ;
+typemode: 'type:' STRING NL ;
+tagsmode: 'tags:' NL tagtag+ ;
 tagtag: STRING NL ;
 eventsmode: sourceevent | eventevent | idevent ;
-sourceevent: 'source' COLON dottedname NL ;
-eventevent: 'event' COLON STRING NL ;
-idevent: 'id' COLON QSTRING NL ;
+sourceevent: 'source:' dottedname NL ;
+eventevent: 'event:' STRING NL ;
+idevent: 'id:' QSTRING NL ;
 dottedname: STRING (DOT STRING)? ; 
 
-description: 'description' COLON NL STRING NL ;
+description: 'description:' NL STRING NL ;
 
-comments: 'comments' COLON STRING NL ;
+comments: 'comments:' STRING NL ;
 
-pfilters: 'filters' COLON NL pfilter+ ;
-pfilter: DASH FILTERTYPE COLON FILTERVALUE NL ;
+pfilters: 'filters:' NL pfilter+ ;
+pfilter: DASH FILTERTYPE ':' FILTERVALUE NL ;
 
-actions: 'actions' COLON NL action+ ;
+actions: 'actions:' NL action+ ;
 action: DASH 'type' TYPEVALUE NL ;
 
 POLICYNAME: ALPHA [A-Za-z\-]+ ;
