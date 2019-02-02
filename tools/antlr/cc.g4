@@ -16,10 +16,13 @@ WS       : [ \t]+ -> skip ;
   Start of policy file grammar
 **/
 start: 'policies' COLON NL policy+ ;
+
 policy: DASH name tags resource pmodes description comments pfilters actions ;
+
 name: 'name' COLON POLICYNAME NL ;
 
-tags: 'tags' NL DASH quotedString NL ;
+tags: 'tags' NL DASH tag+ ; 
+tag: quotedString NL ;
 quotedString: DQUOTE STRING DQUOTE ;
 
 resource: 'resource' COLON rtype NL ;
@@ -34,9 +37,6 @@ sourceevent: 'source' COLON dottedname NL ;
 eventevent: 'event' COLON STRING NL ;
 idevent: 'id' COLON quotedString NL ;
 dottedname: STRING (DOT STRING)? ; 
-
-pmode: valid_modes COLON MODEVALUE NL ;
-valid_modes: 'type' | 'tag' | 'events' ;
 
 description: 'description' COLON NL STRING NL ;
 
