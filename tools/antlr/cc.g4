@@ -7,9 +7,9 @@ COLON    : ':' ;
 DASH     : '-' ;
 DOT      : '.' ;
 DQUOTE   : '"' ;
-STRING   : [A-Za-z0-9 ]+ ;
-TEXT     : [A-Za-z0-9\r\n\t] ;
-NL       : '\r' ;
+QSTRING  : '"' ~('\r' | '\n' | '"')* '"' ;
+STRING   : ~('\r' | '\n' | '"')* ;
+NL       : '\n' ;
 WS       : [ \t]+ -> skip ;
 
 /**
@@ -19,11 +19,11 @@ start: 'policies' COLON NL policy+ ;
 
 policy: DASH name tags resource pmodes description comments pfilters actions ;
 
-name: 'name' COLON POLICYNAME NL ;
+name: 'name' COLON pname NL ;
+pname: POLICYNAME ;
 
 tags: 'tags' NL tag+ ; 
-tag: DASH quotedString NL ;
-quotedString: DQUOTE STRING DQUOTE ;
+tag: DASH QSTRING NL ;
 
 resource: 'resource' COLON rtype NL ;
 rtype: ALPHA DOT ALPHANUM | ALPHANUM ;
@@ -35,12 +35,12 @@ tagtag: STRING NL ;
 eventsmode: sourceevent | eventevent | idevent ;
 sourceevent: 'source' COLON dottedname NL ;
 eventevent: 'event' COLON STRING NL ;
-idevent: 'id' COLON quotedString NL ;
+idevent: 'id' COLON QSTRING NL ;
 dottedname: STRING (DOT STRING)? ; 
 
 description: 'description' COLON NL STRING NL ;
 
-comments: 'comments' COLON TEXT NL ;
+comments: 'comments' COLON STRING NL ;
 
 pfilters: 'filters' COLON NL pfilter+ ;
 pfilter: DASH FILTERTYPE COLON FILTERVALUE NL ;

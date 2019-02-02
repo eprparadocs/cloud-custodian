@@ -2,8 +2,10 @@ policies:
  - name: foo
    resource: aws.ec2
    tags:
-      - "control1:isrm19"
-      - "control2:isrm21"   
+      - "control1:I"
+      - "control2:J"
+   description: 
+      I, J - No unencrypted/publicly-accessible Redshift allowed
    filters:
     - State: in-use
    actions:
