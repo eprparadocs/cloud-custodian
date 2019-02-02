@@ -14,11 +14,11 @@ WS       : [ \t]+ -> skip ;
 /**
   Start of policy file grammar
 **/
-start: 'policies:' NL policy+ ;
+startRule: 'policies:' NL policy+ ;
 
-policy: DASH name tags resource pmodes description comments pfilters actions ;
+policy: name tags resource pmodes description comments pfilters actions ;
 
-name: 'name:' pname NL ;
+name: DASH 'name:' pname NL ;
 pname: POLICYNAME ;
 
 tags: 'tags:' NL tag+ ; 
