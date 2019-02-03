@@ -23,8 +23,8 @@ WS       : [ \t]+ -> skip ;
 /*
  * Definitions of various identifiers.
  */
-fragment LETTER : [a-zA-Z] ;
-fragment DIGIT : [0-9]+ ;
+LETTER : [a-zA-Z] ;
+DIGIT : [0-9]+ ;
 ID : LETTER (LETTER | DIGIT)* ;
 PNAME : ID (ID | DASH)* ;
 
@@ -68,33 +68,18 @@ policy: DASH NAME PNAME NL
 rest: tags |  pmodes | description | comments | pfilters | actions ;
 
 
-tags: TAGS NL tag+ ; 
-tag: DASH QSTRING NL ;
+tags: TAGS NL (tag NL)+ ; 
+tag: ;
 
-pmodes: MODE NL (typemode | tagsmode | eventsmode) ;
-typemode: TYPE STRING NL ;
-tagsmode: TAGS NL tagtag+ ;
-tagtag: STRING NL ;
-eventsmode: sourceevent | eventevent | idevent ;
-sourceevent: SOURCE dottedname NL ;
-eventevent: EVENT STRING NL ;
-idevent: ID QSTRING NL ;
-dottedname: STRING (DOT STRING)? ; 
+pmodes: MODE NL;
 
-description: DESCRIPTION NL STRING NL ;
+description: DESCRIPTIONS NL ;
 
-comments: COMMENTS STRING NL ;
+comments: COMMENTS NL ;
 
-pfilters: FILTERS NL pfilter+ ;
-pfilter: DASH FILTERTYPE COLON FILTERVALUE NL ;
+pfilters: FILTERS NL (pfilter NL)+ ;
+pfilter: ;
 
-actions: ACTIONS NL action+ ;
-action: DASH TYPEBOCOLON TYPEVALUE NL ;
-
-FILTERTYPE: [a-z]+ ;
-FILTERVALUE: [a-z\-]+ ;
-TYPEVALUE: [a-z\-]+ ;
-
-MODETYPE: [A-Za-z] ;
-MODEVALUE: STRING ;
+actions: ACTIONS NL (action NL)+ ;
+action:  ;
 
