@@ -3,6 +3,7 @@ grammar cc ;
 @members {
 DEF_CLOUD_PROVIDER = 'aws'
 cloud_provider = None
+resource_type = None
 }
 
 /*
@@ -62,7 +63,9 @@ startRule:      POLICIES NL policy+ ;
 
 
 policy: DASH NAME PNAME NL 
-	RESOURCE (CLOUDPROVIDER DOT)? ID NL
+	RESOURCE {cloud_provider = DEF_CLOUD_PROVIDER} 
+		(CLOUDPROVIDER {cloud_provider=$CLOUDPROVIDER.test} DOT)? 
+		ID {resource_type=$ID.text} NL
 	rest+
 	;
 rest: tags |  pmodes | description | comments | pfilters | actions ;
